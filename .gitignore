@@ -4,18 +4,17 @@ obj/
 
 # Visual Studio
 .vs/
-*.user
-*.suo
 
-# NuGet packages
+# NuGet
 packages/
 
 # Test Results
 TestResults/
 
-# ReSharper
-_ReSharper*/
-*.DotSettings.user
+# Allure
+allure-results/
+allure-report/
 
-# Logs
-*.log
+# User files
+*.user
+*.suo

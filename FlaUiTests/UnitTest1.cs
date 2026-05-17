@@ -1,23 +1,29 @@
 ﻿using FlaUI.Core;
 using FlaUI.Core.Conditions;
-using FlaUI.Core.Definitions;
 using FlaUI.Core.Input;
 using FlaUI.Core.Shapes;
-using FlaUI.Core.WindowsAPI;
-using FlaUI.UIA2;
 using FlaUI.UIA3;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Diagnostics;
 using System.Threading;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using NUnit.Framework;
+using Allure.NUnit;
+using Allure.NUnit.Attributes;
+using Allure.Net.Commons;
+using Assert = NUnit.Framework.Assert;
 
 namespace FlaUiTests
 {
+    [TestFixture]
+    [AllureNUnit]
+
     [TestClass]
     public class UnitTest1
     {
-        [TestMethod]
+        [AllureTag("Desktop Automation")]
+        [AllureSeverity(SeverityLevel.critical)]
+       
+        [Test]
         public void newUserRegistration()
         {
             var exe = @"C:\Users\Admin\Downloads\FlaUIPractice-master\FlaUIPractice-master\FlaUIPractice\BankSystem\bin\Release\BankSystem.exe";
@@ -49,7 +55,7 @@ namespace FlaUiTests
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestFindMethods()
         {
             var application = FlaUI.Core.Application.Launch(@"C:\Users\Admin\Downloads\FlaUIPractice-master\FlaUIPractice-master\FlaUIPractice\BankSystem\bin\Release\BankSystem.exe");
@@ -66,7 +72,7 @@ namespace FlaUiTests
             }
         }
 
-        [TestMethod]
+        [Test]
         public void CalcTest()
         {
             using (var calc = new Pages.CalculatorPage())
@@ -83,7 +89,7 @@ namespace FlaUiTests
             }
         }
 
-        [TestMethod]
+        [Test]
         public void NotepadTest()
         {
             using (var note = new Pages.NotepadPage())
@@ -103,7 +109,7 @@ namespace FlaUiTests
             }
         }
                
-        [TestMethod]
+        [Test]
         public void TestMenuControls()
         {
             var application = FlaUI.Core.Application.Launch(@"C:\Users\Admin\Downloads\FlaUIPractice-master\FlaUIPractice-master\FlaUIPractice\FlaUiTests\Resources\WinFormsApplication.exe");
@@ -122,7 +128,7 @@ namespace FlaUiTests
             mainWindow.FindFirstDescendant(cf.ByName("Close")).AsButton().Click();
         }
 
-        [TestMethod]
+        [Test]
         public void TestMouseActions()
         {
             Point point = new Point(2298, 82);
@@ -132,7 +138,7 @@ namespace FlaUiTests
             Mouse.Click(MouseButton.Left, point);
         }
      
-        [TestMethod]
+        [Test]
         public void TestCaptureMethod()
         {
             //Full screen
