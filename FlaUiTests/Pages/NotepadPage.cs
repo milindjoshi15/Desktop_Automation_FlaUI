@@ -9,10 +9,10 @@ namespace FlaUiTests.Pages
 {
     public class NotepadPage : IDisposable
     {
-        private readonly Process? _process;
-        private Application _application;
-        private readonly UIA3Automation _automation;
-        private Window? _mainWindow;
+        private readonly Process? process;
+        private Application application;
+        private readonly UIA3Automation automation;
+        private Window? mainWindow;
 
         public NotepadPage()
         {
@@ -20,12 +20,12 @@ namespace FlaUiTests.Pages
             try
             {
                 var psi = new ProcessStartInfo("notepad.exe") { UseShellExecute = true };
-                _application = Application.AttachOrLaunch(psi);
-                _automation = new UIA3Automation();
+                application = Application.AttachOrLaunch(psi);
+                automation = new UIA3Automation();
 
                 try
                 {
-                    _mainWindow = _application.GetMainWindow(_automation, TimeSpan.FromSeconds(5));
+                    mainWindow = application.GetMainWindow(automation, TimeSpan.FromSeconds(5));
                 }
                 catch
                 {
@@ -35,33 +35,33 @@ namespace FlaUiTests.Pages
                         var proc = Process.GetProcessesByName("notepad").FirstOrDefault();
                         if (proc != null)
                         {
-                            _application = Application.Attach(proc.Id);
-                            _mainWindow = _application.GetMainWindow(_automation, TimeSpan.FromSeconds(5));
+                            application = Application.Attach(proc.Id);
+                            mainWindow = application.GetMainWindow(automation, TimeSpan.FromSeconds(5));
                         }
                     }
                     catch { }
                 }
 
-                // Try to set _process to the launched process if available
-                try { _process = Process.GetProcessById(_application.ProcessId); } catch { _process = null; }
+                // Try to set process to the launched process if available
+                try { process = Process.GetProcessById(application.ProcessId); } catch { process = null; }
             }
             catch
             {
                 // In case of any failure, initialize automation so Dispose can run safely
-                _automation = new UIA3Automation();
-                _process = null;
-                _application = null!;
-                _mainWindow = null;
+                automation = new UIA3Automation();
+                process = null;
+                application = null!;
+                mainWindow = null;
             }
         }
 
         public TextBox? GetEditor()
         {
-            if (_mainWindow == null) return null;
+            if (mainWindow == null) return null;
             // Notepad sometimes exposes the editor as Document or as Edit; try both
-            var doc = _mainWindow.FindFirstDescendant(cf => cf.ByControlType(FlaUI.Core.Definitions.ControlType.Document));
+            var doc = mainWindow.FindFirstDescendant(cf => cf.ByControlType(FlaUI.Core.Definitions.ControlType.Document));
             if (doc != null) return doc.AsTextBox();
-            var edit = _mainWindow.FindFirstDescendant(cf => cf.ByControlType(FlaUI.Core.Definitions.ControlType.Edit));
+            var edit = mainWindow.FindFirstDescendant(cf => cf.ByControlType(FlaUI.Core.Definitions.ControlType.Edit));
             return edit?.AsTextBox();
         }
 
@@ -90,10 +90,10 @@ namespace FlaUiTests.Pages
         {
             try
             {
-                if (_mainWindow != null)
+                if (mainWindow != null)
                 {
-                    _mainWindow.Close();
-                    var saveDialog = _mainWindow.ModalWindows.FirstOrDefault();
+                    mainWindow.Close();
+                    var saveDialog = mainWindow.ModalWindows.FirstOrDefault();
                     if (saveDialog != null)
                     {
                         // Try common button names first
@@ -117,20 +117,20 @@ namespace FlaUiTests.Pages
 
         public void Dispose()
         {
-            try { _automation?.Dispose(); } catch { }
+            try { automation?.Dispose(); } catch { }
             try
             {
-                if (_application != null && !_application.HasExited)
+                if (application != null && !application.HasExited)
                 {
-                    _application.Close();
+                    application.Close();
                 }
             }
             catch
             {
-                try { _application?.Kill(); } catch { }
+                try { application?.Kill(); } catch { }
             }
 
-            try { if (_process != null && !_process.HasExited) _process.Kill(); } catch { }
+            try { if (process != null && !process.HasExited) process.Kill(); } catch { }
         }
     }
 }
