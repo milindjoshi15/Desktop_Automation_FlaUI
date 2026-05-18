@@ -10,7 +10,7 @@
   <Import Project="..\packages\MSTest.TestAdapter.2.0.0\build\net45\MSTest.TestAdapter.props" Condition="Exists('..\packages\MSTest.TestAdapter.2.0.0\build\net45\MSTest.TestAdapter.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-	<LangVersion>14.0</LangVersion>
+    <LangVersion>14.0</LangVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BCB9E6B8-8CCC-4CA4-87CA-ACC39F9DFA57}</ProjectGuid>
@@ -169,7 +169,9 @@
     <Compile Include="Pages\CalculatorPage.cs" />
     <Compile Include="Pages\MainWindowPage.cs" />
     <Compile Include="Pages\NotepadPage.cs" />
+    <Compile Include="Pages\PageSettings.cs" />
     <Compile Include="Pages\RegistrationPage.cs" />
+    <Compile Include="Pages\UserData.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

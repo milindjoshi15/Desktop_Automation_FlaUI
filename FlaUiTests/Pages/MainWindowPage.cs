@@ -2,6 +2,7 @@ using FlaUI.Core;
 using FlaUI.Core.Conditions;
 using FlaUI.UIA3;
 using System;
+using System.Configuration;
 
 namespace FlaUiTests.Pages
 {
@@ -20,10 +21,22 @@ namespace FlaUiTests.Pages
             Cf = new ConditionFactory(new UIA3PropertyLibrary());
         }
 
+        // Default constructor reads exe path from configuration (BankSystemExePath)
+        public MainWindowPage()
+            : this(ConfigurationManager.AppSettings["BankSystemExePath"] ?? @"C:\\Users\\Admin\\Downloads\\FlaUIPractice-master\\FlaUIPractice-master\\FlaUIPractice\\BankSystem\\bin\\Release\\BankSystem.exe")
+        {
+        }
+
         public RegistrationPage OpenRegistration()
         {
             MainWindow.FindFirstDescendant(Cf.ByName("Registration")).AsButton().Click();
             return new RegistrationPage(MainWindow, Cf);
+        }
+
+        public bool RegisterNewUser(UserData user)
+        {
+            var reg = OpenRegistration();
+            return reg.RegisterUser(user);
         }
 
         public void ExitAndConfirm()

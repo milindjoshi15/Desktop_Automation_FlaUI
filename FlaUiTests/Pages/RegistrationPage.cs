@@ -1,6 +1,5 @@
 using FlaUI.Core.AutomationElements;
 using FlaUI.Core.Conditions;
-using System;
 
 namespace FlaUiTests.Pages
 {
@@ -8,45 +7,74 @@ namespace FlaUiTests.Pages
     {
         private readonly Window _mainWindow;
         private readonly ConditionFactory _cf;
-
+        // Element references (locators)
+        private readonly TextBox firstNameBox;
+        private readonly TextBox lastNameBox;
+        private readonly ComboBox ageCombo;
+        private readonly ComboBox countryCombo;
+        private readonly TextBox phoneBox;
+        private readonly TextBox emailBox;
+        private readonly TextBox passBox;
+        private readonly TextBox cardBox;
+        private readonly CheckBox vipCheck;
+        private readonly Button okButton;
+        private readonly Button cancelButton;
+        
         public RegistrationPage(Window mainWindow, ConditionFactory cf)
         {
             _mainWindow = mainWindow;
             _cf = cf;
+
+            // Initialize element references
+            firstNameBox = _mainWindow.FindFirstDescendant(_cf.ByAutomationId("InFName"))?.AsTextBox();
+            lastNameBox = _mainWindow.FindFirstDescendant(_cf.ByAutomationId("InLName"))?.AsTextBox();
+            ageCombo = _mainWindow.FindFirstDescendant(_cf.ByAutomationId("InAge"))?.AsComboBox();
+            countryCombo = _mainWindow.FindFirstDescendant(_cf.ByAutomationId("InCountry"))?.AsComboBox();
+            phoneBox = _mainWindow.FindFirstDescendant(_cf.ByAutomationId("InPhone"))?.AsTextBox();
+            emailBox = _mainWindow.FindFirstDescendant(_cf.ByAutomationId("InEmail"))?.AsTextBox();
+            passBox = _mainWindow.FindFirstDescendant(_cf.ByAutomationId("InPass"))?.AsTextBox();
+            cardBox = _mainWindow.FindFirstDescendant(_cf.ByAutomationId("InCard"))?.AsTextBox();
+            vipCheck = _mainWindow.FindFirstDescendant(_cf.ByAutomationId("VipCheck"))?.AsCheckBox();
+            okButton = _mainWindow.FindFirstDescendant(_cf.ByName("Ok"))?.AsButton();
+            cancelButton = _mainWindow.FindFirstDescendant(_cf.ByName("Cancel"))?.AsButton();
+        }
+
+        public bool RegisterUser(UserData user)
+        {
+            FillForm(user.FirstName, user.LastName, user.Age, user.Country, user.Phone, user.Email, user.Password, user.Card, user.Vip);
+            return SubmitAndHandleResult();
         }
 
         public void FillForm(string firstName, string lastName, string age, string country, string phone, string email, string pass, string card, bool vip)
         {
-            _mainWindow.FindFirstDescendant(_cf.ByAutomationId("InFName")).AsTextBox().Enter(firstName);
-            _mainWindow.FindFirstDescendant(_cf.ByAutomationId("InLName")).AsTextBox().Enter(lastName);
+            firstNameBox?.Enter(firstName);
+            lastNameBox?.Enter(lastName);
 
-            var ageBox = _mainWindow.FindFirstDescendant(_cf.ByAutomationId("InAge")).AsComboBox();
-            if (ageBox != null)
+            if (ageCombo != null)
             {
-                ageBox.Patterns.ExpandCollapse.Pattern.Expand();
-                ageBox.Select(age);
+                ageCombo.Patterns.ExpandCollapse.Pattern.Expand();
+                ageCombo.Select(age);
             }
 
-            var countryBox = _mainWindow.FindFirstDescendant(_cf.ByAutomationId("InCountry")).AsComboBox();
-            if (countryBox != null)
+            if (countryCombo != null)
             {
-                countryBox.Patterns.ExpandCollapse.Pattern.Expand();
-                countryBox.Select(country);
+                countryCombo.Patterns.ExpandCollapse.Pattern.Expand();
+                countryCombo.Select(country);
             }
 
-            _mainWindow.FindFirstDescendant(_cf.ByAutomationId("InPhone")).AsTextBox().Enter(phone);
-            _mainWindow.FindFirstDescendant(_cf.ByAutomationId("InEmail")).AsTextBox().Enter(email);
-            _mainWindow.FindFirstDescendant(_cf.ByAutomationId("InPass")).AsTextBox().Enter(pass);
-            _mainWindow.FindFirstDescendant(_cf.ByAutomationId("InCard")).AsTextBox().Enter(card);
+            phoneBox?.Enter(phone);
+            emailBox?.Enter(email);
+            passBox?.Enter(pass);
+            cardBox?.Enter(card);
             if (vip)
             {
-                _mainWindow.FindFirstDescendant(_cf.ByAutomationId("VipCheck")).AsCheckBox().Click();
+                vipCheck?.Click();
             }
         }
 
         public bool SubmitAndHandleResult()
         {
-            _mainWindow.FindFirstDescendant(_cf.ByName("Ok")).AsButton().Click();
+            okButton?.Click();
             var congrats = _mainWindow.FindFirstDescendant(_cf.ByName("Congratulations"));
             if (congrats != null)
             {
@@ -57,7 +85,7 @@ namespace FlaUiTests.Pages
             if (error != null)
             {
                 error.AsWindow().FindFirstDescendant(_cf.ByName("OK")).AsButton().Click();
-                _mainWindow.FindFirstDescendant(_cf.ByName("Cancel")).AsButton().Click();
+                cancelButton?.Click();
                 return false;
             }
             return false;

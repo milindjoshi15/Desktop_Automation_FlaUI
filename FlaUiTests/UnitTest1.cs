@@ -5,6 +5,7 @@ using FlaUI.Core.Shapes;
 using FlaUI.UIA3;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Configuration;
 using System.Threading;
 using NUnit.Framework;
 using Allure.NUnit;
@@ -26,22 +27,25 @@ namespace FlaUiTests
         [Test]
         public void newUserRegistration()
         {
-            var exe = @"C:\Users\Admin\Downloads\FlaUIPractice-master\FlaUIPractice-master\FlaUIPractice\BankSystem\bin\Release\BankSystem.exe";
-            using (var main = new Pages.MainWindowPage(exe))
+            // Arrange test data
+            var user = new Pages.UserData
             {
-                var reg = main.OpenRegistration();
-                reg.FillForm(
-                    firstName: "Joao",
-                    lastName: "Santos",
-                    age: "34",
-                    country: "Romania",
-                    phone: "8444941223",
-                    email: "sds@gmail.com",
-                    pass: "17745",
-                    card: "3216547773216547",
-                    vip: true);
+                FirstName = "Joao",
+                LastName = "Santos",
+                Age = "34",
+                Country = "Romania",
+                Phone = "8444941223",
+                Email = "sds@gmail.com",
+                Password = "17745",
+                Card = "3216547773216547",
+                Vip = true
+            };
 
-                var success = reg.SubmitAndHandleResult();
+            // Act using POM style - MainWindowPage will use configured exe path by default
+            using (var main = new Pages.MainWindowPage(Pages.PageSettings.BankSystemExePath))
+            {
+                var success = main.RegisterNewUser(user);
+                // Assert/Log
                 if (success)
                 {
                     Console.WriteLine("User registered successfully.");
@@ -58,7 +62,8 @@ namespace FlaUiTests
         [Test]
         public void TestFindMethods()
         {
-            var application = FlaUI.Core.Application.Launch(@"C:\Users\Admin\Downloads\FlaUIPractice-master\FlaUIPractice-master\FlaUIPractice\BankSystem\bin\Release\BankSystem.exe");
+            var bankExe = Pages.PageSettings.BankSystemExePath;
+            var application = FlaUI.Core.Application.Launch(bankExe);
             var automation = new UIA3Automation();
             var mainWindow = application.GetMainWindow(automation);
             ConditionFactory cf = new ConditionFactory(new UIA3PropertyLibrary());
@@ -100,6 +105,7 @@ namespace FlaUiTests
                 Assert.AreEqual(initialText, note.Text);
 
                 string updatedText = initialText + " - Updated Successfully";
+                Thread.Sleep(1000);
                 note.Text = updatedText;
                 Thread.Sleep(1000);
                 Assert.AreEqual(updatedText, note.Text);
@@ -112,7 +118,8 @@ namespace FlaUiTests
         [Test]
         public void TestMenuControls()
         {
-            var application = FlaUI.Core.Application.Launch(@"C:\Users\Admin\Downloads\FlaUIPractice-master\FlaUIPractice-master\FlaUIPractice\FlaUiTests\Resources\WinFormsApplication.exe");
+            var winFormsExe = Pages.PageSettings.WinFormsAppExePath;
+            var application = FlaUI.Core.Application.Launch(winFormsExe);
             var automation = new UIA3Automation();
             var mainWindow = application.GetMainWindow(automation);
             ConditionFactory cf = new ConditionFactory(new UIA3PropertyLibrary());
@@ -141,22 +148,24 @@ namespace FlaUiTests
         [Test]
         public void TestCaptureMethod()
         {
+            var picturesFolder = Pages.PageSettings.PicturesFolder;
             //Full screen
             var fullscreenImg = Capture.Screen();
-            fullscreenImg.ToFile(@"C:\Users\Admin\Pictures\Saved Pictures\FullScreen.png");
+            fullscreenImg.ToFile(System.IO.Path.Combine(picturesFolder, "FullScreen.png"));
 
             //only one automation element
-            var application = FlaUI.Core.Application.Launch(@"C:\Users\Admin\Downloads\FlaUIPractice-master\FlaUIPractice-master\FlaUIPractice\BankSystem\bin\Release\BankSystem.exe");
+            var bankExe = Pages.PageSettings.BankSystemExePath;
+            var application = FlaUI.Core.Application.Launch(bankExe);
             var automation = new UIA3Automation();
             var mainWindow = application.GetMainWindow(automation);
             ConditionFactory cf = new ConditionFactory(new UIA3PropertyLibrary());
             var loginBtn = mainWindow.FindFirstDescendant(cf.ByName("Log In"));
             var loginImg = Capture.Element(loginBtn);
-            loginImg.ToFile(@"C:\Users\Admin\Pictures\Saved Pictures\Login Button.png");
+            loginImg.ToFile(System.IO.Path.Combine(picturesFolder, "Login Button.png"));
 
             //user defined rectangle area 
             var rectangleImg = Capture.Rectangle(new Rectangle(500, 500, 100, 150));
-            rectangleImg.ToFile(@"C:\Users\Admin\Pictures\Saved Pictures\Rectangle Img.png");
+            rectangleImg.ToFile(System.IO.Path.Combine(picturesFolder, "Rectangle Img.png"));
         }       
     }
 }
