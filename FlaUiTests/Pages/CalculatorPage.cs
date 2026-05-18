@@ -20,10 +20,8 @@ namespace FlaUiTests.Pages
                 application = Application.Launch(@"C:\\Windows\\System32\\calc.exe");
                 automation = new UIA3Automation();               
                 // If not found, try to attach to any running Calculator process by common names
-                if (mainWindow == null)
-                {
-                    var candidates = new[] { "Calculator", "CalculatorApp", "calc", "WindowsCalculator", "ApplicationFrameHost" };
-                    foreach (var name in candidates)
+                var candidates = new[] { "Calculator", "CalculatorApp", "calc", "WindowsCalculator", "ApplicationFrameHost" };
+                foreach (var name in candidates)
                     {
                         try
                         {
@@ -47,7 +45,7 @@ namespace FlaUiTests.Pages
                         // Fail fast with a clear exception so tests don't get a null reference later
                         throw new InvalidOperationException("Unable to start or attach to Calculator main window.");
                     }
-                }
+                
             }
             catch
             {

@@ -5,7 +5,6 @@ using FlaUI.Core.Shapes;
 using FlaUI.UIA3;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Configuration;
 using System.Threading;
 using NUnit.Framework;
 using Allure.NUnit;
@@ -102,8 +101,7 @@ namespace FlaUiTests
                 string initialText = "Hello this is FlaUI automation";
                 note.EnterText(initialText);
                 Thread.Sleep(1000);
-                Assert.AreEqual(initialText, note.Text);
-
+                Assert.AreEqual(initialText, note.Text);                
                 string updatedText = initialText + " - Updated Successfully";
                 Thread.Sleep(1000);
                 note.Text = updatedText;
